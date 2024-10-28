@@ -52,7 +52,10 @@ def index(request):
 
 def post_detail(request, id):
     template = 'blog/detail.html'
-    context = {'post': posts[id]}
+    try:
+        context = {'post': [i for i in posts if i["id"] == id][0]}
+    except IndexError:
+        return render(request, "errors/404.html")
     return render(request, template, context)
 
 
