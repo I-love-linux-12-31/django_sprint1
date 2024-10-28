@@ -42,6 +42,7 @@ posts = [
                 укутывал их, чтобы не испортились от дождя.''',
     },
 ]
+posts_by_id = {i["id"]: i for i in posts}
 
 
 def index(request):
@@ -52,11 +53,12 @@ def index(request):
 
 def post_detail(request, id):
     template = 'blog/detail.html'
-    try:
-        context = {'post': [i for i in posts if i["id"] == id][0]}
-    except IndexError:
-        return render(request, "errors/404.html")
-    return render(request, template, context)
+    if id in posts_by_id:
+        context = {'post': posts_by_id[id]}
+        return render(request, template, context)
+    else:
+        return render(request, "errors/404.html",
+                      status=404, context={"details": f"Не найден пост {id}."})
 
 
 def category_posts(request, category_slug):
